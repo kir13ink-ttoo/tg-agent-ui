@@ -268,11 +268,13 @@
         const hash = window.location.hash.replace(/^#/, "");
         if (!hash.startsWith("data=")) return null;
 
-        let b64 = hash.slice("data=".length);
-        b64 = b64.replace(/-/g, "+").replace(/_/g, "/");
-        while (b64.length % 4 !== 0) b64 += "=";
+        // Backend strips Base64 padding to keep the URL safe; restore it
+        // before atob(), otherwise decoding fails on some payloads.
+        let rawData = window.location.hash.substring(1).replace("data=", "");
+        rawData = rawData.replace(/-/g, "+").replace(/_/g, "/");
+        rawData = rawData + "=".repeat((4 - rawData.length % 4) % 4);
 
-        const binary = atob(b64);
+        const binary = atob(rawData);
         const bytes = new Uint8Array(binary.length);
         for (let i = 0; i < binary.length; i += 1) {
           bytes[i] = binary.charCodeAt(i);
