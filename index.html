@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Дайджест — Кира</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: var(--tg-theme-secondary-bg-color, #f1f2f5);
+      --card: var(--tg-theme-bg-color, #ffffff);
+      --text: var(--tg-theme-text-color, #17212b);
+      --hint: var(--tg-theme-hint-color, #7b8794);
+      --accent: var(--tg-theme-button-color, #3390ec);
+      --accent-text: var(--tg-theme-button-text-color, #ffffff);
+      --separator: var(--tg-theme-section-separator-color, rgba(128, 128, 128, .18));
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: calc(20px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom));
+    }
+
+    .app {
+      max-width: 520px;
+      margin: 0 auto;
+      animation: rise .35s ease both;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    header { padding: 4px 4px 18px; }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+    }
+
+    .timestamp {
+      margin: 10px 0 0;
+      font-size: 13px;
+      color: var(--hint);
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+      border: 1px solid var(--separator);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 19px;
+      background: var(--bg);
+      flex: 0 0 auto;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: .01em;
+    }
+
+    .card-sub {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: var(--hint);
+    }
+
+    .value {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.5;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    .value + .value { margin-top: 8px; }
+
+    .tasks { list-style: none; margin: 0; padding: 0; }
+
+    .tasks li {
+      display: flex;
+      gap: 12px;
+      padding: 11px 0;
+      border-top: 1px solid var(--separator);
+    }
+
+    .tasks li:first-child { border-top: 0; padding-top: 0; }
+
+    .task-time {
+      flex: 0 0 auto;
+      font-size: 12px;
+      font-weight: 650;
+      color: var(--accent);
+      background: var(--bg);
+      border-radius: 999px;
+      padding: 4px 9px;
+      height: fit-content;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .task-text { font-size: 15px; line-height: 1.45; overflow-wrap: anywhere; }
+
+    .empty {
+      margin: 0;
+      font-size: 14px;
+      color: var(--hint);
+    }
+
+    .notice {
+      background: var(--card);
+      border: 1px dashed var(--separator);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--hint);
+    }
+
+    .donate { margin-top: 12px; }
+
+    .wallet {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--separator);
+      border-radius: 12px;
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color .15s ease, transform .1s ease;
+    }
+
+    .wallet:active { transform: scale(.99); }
+    .wallet:hover { border-color: var(--accent); }
+
+    .wallet code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+      user-select: all;
+      -webkit-user-select: all;
+    }
+
+    .copy-hint {
+      flex: 0 0 auto;
+      font-size: 11px;
+      font-weight: 650;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--hint);
+    }
+
+    footer b { color: var(--text); font-weight: 600; }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: var(--tg-theme-secondary-bg-color, #0f0f10);
+        --card: var(--tg-theme-bg-color, #1c1c1e);
+        --text: var(--tg-theme-text-color, #f2f2f7);
+        --hint: var(--tg-theme-hint-color, #8e8e93);
+        --separator: var(--tg-theme-section-separator-color, rgba(255, 255, 255, .12));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <p class="eyebrow">Кира · Mini App</p>
+      <h1>Доброе утро</h1>
+      <p class="timestamp" id="timestamp">Собираю данные…</p>
+    </header>
+
+    <div id="content" aria-live="polite"></div>
+
+    <section class="card donate">
+      <div class="card-head">
+        <div class="icon">☕</div>
+        <div>
+          <h2 class="card-title">Поддержать автора</h2>
+          <p class="card-sub">USDT · TRC20</p>
+        </div>
+      </div>
+      <button class="wallet" id="wallet" type="button" title="Скопировать адрес">
+        <code id="wallet-address">TYTGNLdWL9jN7G2y7USBcTUDaXEsTRyodK</code>
+        <span class="copy-hint" id="copy-hint">Копировать</span>
+      </button>
+    </section>
+
+    <footer>Собрано ботом <b>Кира</b> · данные в URL, без сервера</footer>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const tg = window.Telegram && window.Telegram.WebApp;
+      if (tg) {
+        tg.ready();
+        tg.expand();
+        try {
+          if (tg.setHeaderColor) tg.setHeaderColor("secondary_bg_color");
+          if (tg.setBackgroundColor) tg.setBackgroundColor("secondary_bg_color");
+        } catch (e) { /* older clients */ }
+      }
+
+      const content = document.getElementById("content");
+      const timestamp = document.getElementById("timestamp");
+
+      function decodePayload() {
+        const hash = window.location.hash.replace(/^#/, "");
+        if (!hash.startsWith("data=")) return null;
+
+        let b64 = hash.slice("data=".length);
+        b64 = b64.replace(/-/g, "+").replace(/_/g, "/");
+        while (b64.length % 4 !== 0) b64 += "=";
+
+        const binary = atob(b64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i += 1) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        return JSON.parse(new TextDecoder("utf-8").decode(bytes));
+      }
+
+      function el(tag, className, text) {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text !== undefined && text !== null) node.textContent = text;
+        return node;
+      }
+
+      function makeCard(icon, title, subtitle) {
+        const card = el("section", "card");
+        const head = el("div", "card-head");
+        head.appendChild(el("div", "icon", icon));
+
+        const titles = el("div");
+        titles.appendChild(el("h2", "card-title", title));
+        if (subtitle) titles.appendChild(el("p", "card-sub", subtitle));
+        head.appendChild(titles);
+
+        card.appendChild(head);
+        return card;
+      }
+
+      function renderWeather(weather) {
+        const card = makeCard("🌤", "Погода", weather && weather.city ? weather.city : "Siem Reap");
+        card.appendChild(el("p", "value", (weather && weather.text) || "Нет данных"));
+        content.appendChild(card);
+      }
+
+      function renderRates(rates) {
+        const card = makeCard("💱", "Курсы валют", "USD · KHR · USDT");
+        card.appendChild(el("p", "value", (rates && rates.fiat) || "Нет данных"));
+        card.appendChild(el("p", "value", (rates && rates.usdt) || "Нет данных"));
+        content.appendChild(card);
+      }
+
+      function formatTime(iso) {
+        if (!iso) return "—";
+        const date = new Date(iso);
+        if (Number.isNaN(date.getTime())) return "—";
+        return date.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+      }
+
+      function renderTasks(tasks) {
+        const card = makeCard("📋", "Задачи", "Напоминания на сегодня");
+
+        if (!Array.isArray(tasks) || tasks.length === 0) {
+          card.appendChild(el("p", "empty", "На сегодня задач нет."));
+        } else {
+          const list = el("ul", "tasks");
+          tasks.forEach(function (task) {
+            const item = el("li");
+            item.appendChild(el("span", "task-time", formatTime(task.time)));
+            item.appendChild(el("span", "task-text", task.text || "Без описания"));
+            list.appendChild(item);
+          });
+          card.appendChild(list);
+        }
+
+        content.appendChild(card);
+      }
+
+      const wallet = document.getElementById("wallet");
+      const walletAddress = document.getElementById("wallet-address");
+      const copyHint = document.getElementById("copy-hint");
+
+      wallet.addEventListener("click", async function () {
+        const value = walletAddress.textContent.trim();
+        try {
+          await navigator.clipboard.writeText(value);
+        } catch (error) {
+          const range = document.createRange();
+          range.selectNodeContents(walletAddress);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          document.execCommand("copy");
+        }
+        copyHint.textContent = "Скопировано ✓";
+        window.setTimeout(function () {
+          copyHint.textContent = "Копировать";
+        }, 1800);
+      });
+
+      function showNotice(message) {
+        content.appendChild(el("div", "notice", message));
+        timestamp.textContent = "Данные не получены";
+      }
+
+      let data;
+      try {
+        data = decodePayload();
+      } catch (error) {
+        console.error("Failed to decode digest payload", error);
+        showNotice("Не удалось прочитать данные дайджеста. Откройте его заново из бота командой /app.");
+        return;
+      }
+
+      if (!data) {
+        showNotice("Данные не переданы. Откройте дайджест из бота командой /app.");
+        return;
+      }
+
+      if (data.generated_at) {
+        const date = new Date(data.generated_at);
+        timestamp.textContent = Number.isNaN(date.getTime())
+          ? "Актуально сейчас"
+          : "Обновлено " + date.toLocaleString("ru-RU", {
+              day: "numeric", month: "long", hour: "2-digit", minute: "2-digit"
+            });
+      } else {
+        timestamp.textContent = "Актуально сейчас";
+      }
+
+      renderWeather(data.weather);
+      renderRates(data.rates);
+      renderTasks(data.tasks);
+    })();
+  </script>
+</body>
+</html>
