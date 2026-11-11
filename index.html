@@ -160,46 +160,6 @@
       color: var(--hint);
     }
 
-    .donate { margin-top: 12px; }
-
-    .wallet {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 14px;
-      border: 1px solid var(--separator);
-      border-radius: 12px;
-      background: var(--bg);
-      color: var(--text);
-      font: inherit;
-      cursor: pointer;
-      text-align: left;
-      transition: border-color .15s ease, transform .1s ease;
-    }
-
-    .wallet:active { transform: scale(.99); }
-    .wallet:hover { border-color: var(--accent); }
-
-    .wallet code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 12.5px;
-      line-height: 1.4;
-      overflow-wrap: anywhere;
-      user-select: all;
-      -webkit-user-select: all;
-    }
-
-    .copy-hint {
-      flex: 0 0 auto;
-      font-size: 11px;
-      font-weight: 650;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: .06em;
-    }
-
     footer {
       margin-top: 20px;
       text-align: center;
@@ -229,20 +189,6 @@
     </header>
 
     <div id="content" aria-live="polite"></div>
-
-    <section class="card donate">
-      <div class="card-head">
-        <div class="icon">☕</div>
-        <div>
-          <h2 class="card-title">Поддержать автора</h2>
-          <p class="card-sub">USDT · TRC20</p>
-        </div>
-      </div>
-      <button class="wallet" id="wallet" type="button" title="Скопировать адрес">
-        <code id="wallet-address">TYTGNLdWL9jN7G2y7USBcTUDaXEsTRyodK</code>
-        <span class="copy-hint" id="copy-hint">Копировать</span>
-      </button>
-    </section>
 
     <footer>Собрано ботом <b>Кира</b> · данные в URL, без сервера</footer>
   </div>
@@ -341,28 +287,6 @@
 
         content.appendChild(card);
       }
-
-      const wallet = document.getElementById("wallet");
-      const walletAddress = document.getElementById("wallet-address");
-      const copyHint = document.getElementById("copy-hint");
-
-      wallet.addEventListener("click", async function () {
-        const value = walletAddress.textContent.trim();
-        try {
-          await navigator.clipboard.writeText(value);
-        } catch (error) {
-          const range = document.createRange();
-          range.selectNodeContents(walletAddress);
-          const selection = window.getSelection();
-          selection.removeAllRanges();
-          selection.addRange(range);
-          document.execCommand("copy");
-        }
-        copyHint.textContent = "Скопировано ✓";
-        window.setTimeout(function () {
-          copyHint.textContent = "Копировать";
-        }, 1800);
-      });
 
       function showNotice(message) {
         content.appendChild(el("div", "notice", message));
